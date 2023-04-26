@@ -1,0 +1,55 @@
+# Nome do meu fluxo
+name: CI
+
+# Controla quando o fluxo de trabalho será executado
+on:
+  # Aciona o fluxo de trabalho em eventos de solicitação push ou pull, mas apenas para a ramificação "principal"
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Permite que você execute este fluxo de trabalho manualmente a partir da guia "Actions"
+  workflow_dispatch:
+
+# Uma execução de fluxo de trabalho é composta de um ou mais trabalhos que podem ser executados sequencialmente ou em paralelo
+jobs:
+  # Este fluxo de trabalho contém um único trabalho chamado "build"
+  build:
+    # Informando onde o trabalho será executado
+    runs-on: ubuntu-latest
+
+    # Steps representam uma sequência de tarefas que serão executadas como parte do trabalho
+    steps:
+      # Check-out do seu repositório em $GITHUB_WORKSPACE, para que seu trabalho possa acessá-lo
+      - uses: actions/checkout@v2
+
+      # Cache de dependências
+      - name: Cache de dependências
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm # Caminho para as dependências (ajuste de acordo com a linguagem de programação)
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }} # Chave de cache única
+
+      # Executa um único comando usando o shell runners
+      - name: Executando Docker 
+        run: docker run docker/whalesay cowsay DEVOPS IT TALENT
+
+      # Executa um conjunto de comandos usando o shell runners
+      - name: Executar script multi-linha
+        run: |
+          echo Adicione outras ações para construir,
+          echo testar e implantar seu projeto.
+
+  # Adicione uma notificação quando o trabalho é concluído
+  notifications:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Enviar notificação para Slack
+        uses: rtCamp/action-slack-notify@v3
+        with:
+          status: ${{ job.status }}
+          text: 'O trabalho de construção foi concluído com status ${{ job.status }}!'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
