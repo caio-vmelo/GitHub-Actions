@@ -1,4 +1,6 @@
-# Nome do meu fluxo
+# Este é um fluxo de trabalho básico utilizado na Aula sobre GitHub Actios DevOps Básico.
+
+#nome do meu fluxo
 name: CI
 
 # Controla quando o fluxo de trabalho será executado
@@ -22,34 +24,14 @@ jobs:
     # Steps representam uma sequência de tarefas que serão executadas como parte do trabalho
     steps:
       # Check-out do seu repositório em $GITHUB_WORKSPACE, para que seu trabalho possa acessá-lo
-      - uses: actions/checkout@v2
-
-      # Cache de dependências
-      - name: Cache de dependências
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm # Caminho para as dependências (ajuste de acordo com a linguagem de programação)
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }} # Chave de cache única
+      - uses: actions/checkout@v3
 
       # Executa um único comando usando o shell runners
-      - name: Executando Docker 
+      - name: executando docker 
         run: docker run docker/whalesay cowsay DEVOPS IT TALENT
 
       # Executa um conjunto de comandos usando o shell runners
-      - name: Executar script multi-linha
+      - name: Run a multi-line script
         run: |
-          echo Adicione outras ações para construir,
-          echo testar e implantar seu projeto.
-
-  # Adicione uma notificação quando o trabalho é concluído
-  notifications:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Enviar notificação para Slack
-        uses: rtCamp/action-slack-notify@v3
-        with:
-          status: ${{ job.status }}
-          text: 'O trabalho de construção foi concluído com status ${{ job.status }}!'
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          echo Add other actions to build,
+          echo test, and deploy your project.
